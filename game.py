@@ -6,7 +6,6 @@ import random
 
 # importing the keystrokes from the pygame.locals.
 from pygame.locals import (
-    RLEACCEL,
     K_UP,
     K_DOWN,
     K_LEFT,
@@ -23,13 +22,21 @@ pygame.init()
 screen_width = 1200
 screen_height = 800
 
+# setting the player height.
+player_height = 100
+player_width = 60
+
+# setting up the enemy height.
+enemy_height = 70
+enemy_width = 90
+
 
 # setting up the player sprite.
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
-        self.surf = pygame.image.load("images/IRONMAN.png")
-        self.surf.set_colorkey((255, 255, 255), RLEACCEL)
+        self.surf = pygame.image.load("images/PLAYER_IRONMAN.png")
+        self.surf = pygame.transform.scale(self.surf, (player_width, player_height))
         self.rect = self.surf.get_rect()
 
     # comes into action when the keys mentioned above are registered in the returned pressed_keys dictionary below.
@@ -59,8 +66,8 @@ class Player(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super(Enemy, self).__init__()
-        self.surf = pygame.image.load("images/ENEMY_FIRE.png")
-        self.surf.set_colorkey((255, 255, 255), RLEACCEL)
+        self.surf = pygame.image.load("images/ENEMY_ALIEN.png")
+        self.surf = pygame.transform.scale(self.surf, (enemy_width, enemy_height))
         self.rect = self.surf.get_rect(
             center=(
                 random.randint(screen_width + 20, screen_width + 100),
@@ -93,7 +100,7 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
 # setting the background image.
-background_image = pygame.image.load("images/BACKGROUND.png")
+background_image = pygame.image.load("images/BACKGROUND_WALLPAPER.jpg")
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
 
 counter = 0
@@ -165,7 +172,7 @@ while running:
 
     # setting the frame rate for the game.
     clock = pygame.time.Clock()
-    clock.tick(750)
+    clock.tick(700)
 
     # updates the contents of the screen throughout the loop.
     pygame.display.flip()
