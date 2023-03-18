@@ -57,7 +57,7 @@ while running:
     surf.fill((0, 0, 0))
 
     # creating its underlying rectangle
-    rectangle = surf.get_rect()
+    rect = surf.get_rect()
 
     # finding the exact center of the surface to align it both horizontally and vertically in the center.
     surface_center = (
@@ -67,6 +67,7 @@ while running:
 
     # copying the contents from the surface to the screen.
 
-    screen.blit(surf, surface_center)
+    # screen.blit(surf, surface_center)
     screen.blit(player.surf, (screen_width/2, screen_height/2))
+    # screen.blit(player.surf, player.rect)
     pygame.display.flip()
