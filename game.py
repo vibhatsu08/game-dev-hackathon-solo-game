@@ -165,7 +165,7 @@ while running:
 
     # setting the frame rate for the game.
     clock = pygame.time.Clock()
-    clock.tick(700)
+    clock.tick(750)
 
     # updates the contents of the screen throughout the loop.
     pygame.display.flip()
