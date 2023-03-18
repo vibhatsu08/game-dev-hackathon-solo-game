@@ -19,8 +19,8 @@ from pygame.locals import (
 pygame.init()
 
 # setting up the screen.
-screen_width = 800
-screen_height = 600
+screen_width = 1200
+screen_height = 800
 
 
 # setting up the player sprite.
@@ -66,15 +66,20 @@ class Enemy(pygame.sprite.Sprite):
                 random.randint(0, screen_height),
             )
         )
-        self.speed = random.randint(1, 4)
+        self.speed = random.randint(1, 2)
 
     def update(self):
         self.rect.move_ip(-self.speed, 0)
         if self.rect.right < 0:
             self.kill()
 
+
 # sets up the dimensions of the screen based on the screen_width and screen_height variables.
 screen = pygame.display.set_mode((screen_width, screen_height))
+
+# create a custom event for adding a new enemy.
+ADDENEMY = pygame.USEREVENT + 1
+pygame.time.set_timer(ADDENEMY, 250)
 
 # player is an instance of the Player class created above.
 player = Player()
@@ -82,7 +87,7 @@ player = Player()
 # creating two sprite groups,
 # one for the enemy.
 # and the other one for the player.
-enemy = pygame.sprite.Group()
+enemies = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
@@ -96,8 +101,17 @@ while running:
         elif event.type == QUIT:
             running = False
 
+        # add the new enemy event handler.
+        elif event.type == ADDENEMY:
+            new_enemy = Enemy()
+            enemies.add(new_enemy)
+            all_sprites.add(new_enemy)
+
     # return a dictionary of all the keys pressed.
     pressed_keys = pygame.key.get_pressed()
+
+    # update the enemies' position.
+    enemies.update()
 
     # update the frame every time in order to move the player, based on the key pressed.
     player.update(pressed_keys)
