@@ -6,6 +6,7 @@ import random
 
 # importing the keystrokes from the pygame.locals.
 from pygame.locals import (
+    RLEACCEL,
     K_UP,
     K_DOWN,
     K_LEFT,
@@ -27,8 +28,8 @@ screen_height = 800
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
-        self.surf = pygame.Surface((75, 25))
-        self.surf.fill((255, 0, 255))
+        self.surf = pygame.image.load("images/IRONMAN.png")
+        self.surf.set_colorkey((255, 255, 255), RLEACCEL)
         self.rect = self.surf.get_rect()
 
     # comes into action when the keys mentioned above are registered in the returned pressed_keys dictionary below.
@@ -58,15 +59,15 @@ class Player(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super(Enemy, self).__init__()
-        self.surf = pygame.Surface((20, 10))
-        self.surf.fill((0, 0, 0))
+        self.surf = pygame.image.load("images/ENEMY_FIRE.png")
+        self.surf.set_colorkey((255, 255, 255), RLEACCEL)
         self.rect = self.surf.get_rect(
             center=(
                 random.randint(screen_width + 20, screen_width + 100),
                 random.randint(0, screen_height),
             )
         )
-        self.speed = random.randint(1, 2)
+        self.speed = random.randint(1, 3)
 
     def update(self):
         self.rect.move_ip(-self.speed, 0)
@@ -91,9 +92,22 @@ enemies = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
+# setting the background image.
+background_image = pygame.image.load("images/BACKGROUND.png")
+background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
+
+counter = 0
+
 # setting up the key event handlers with the game loop.
 running = True
 while running:
+    screen.fill((0, 0, 0))
+    screen.blit(background_image, (counter, 0))
+    screen.blit(background_image, (screen_width + counter, 0))
+    if counter == -screen_width:
+        screen.blit(background_image, (screen_width + counter, 0))
+        counter = 0
+    counter -= 1
     for event in pygame.event.get():
         if event.type == KEYDOWN:
             if event.key == K_ESCAPE:
@@ -107,6 +121,13 @@ while running:
             enemies.add(new_enemy)
             all_sprites.add(new_enemy)
 
+    # collision detection for the sprite and the enemies.
+    # basically if the player collides with any of the member sprites of the enemies group, the player is
+    # killed and the loop is broken.
+    if pygame.sprite.spritecollideany(player, enemies):
+        player.kill()
+        running = False
+
     # return a dictionary of all the keys pressed.
     pressed_keys = pygame.key.get_pressed()
 
@@ -118,7 +139,7 @@ while running:
 
     # creating or drawing something on the screen using the Surface. The main screen is a surface since all the other
     # sprites for the player will be a Surface sprite.
-    screen.fill((255, 255, 255))
+    # screen.fill((255, 255, 255))
 
     # now creating a Surface
     surf = pygame.Surface((50, 50))
@@ -142,4 +163,9 @@ while running:
     for entity in all_sprites:
         screen.blit(entity.surf, entity.rect)
 
+    # setting the frame rate for the game.
+    clock = pygame.time.Clock()
+    clock.tick(700)
+
+    # updates the contents of the screen throughout the loop.
     pygame.display.flip()
