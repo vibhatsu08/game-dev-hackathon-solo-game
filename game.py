@@ -1,29 +1,32 @@
 # This program is an equivalent to any hello world program in any other programming language.
 
-# Importing and initialising the pygame library.
+# Importing and initializing the game library.
 import pygame
+pygame.init()
 
-# setting the screen size parameters.
+# setting up the screen's width and height parameters.
 screen_width = 500
 screen_height = 500
 screen = pygame.display.set_mode([screen_width, screen_height])
 
-# setting up the game loop.
+# flag for the game loop, the game will run as long as the loop is True.
 running = True
+
 while running :
-    # event for if the user clicked the window close button.
+    # event to check when the game window is closed.
     for event in pygame.event.get() :
+        # checks if the game window is closed.
         if event.type == pygame.QUIT :
             running = False
 
-        # filling the background color with white
-        screen.fill((255, 255, 255))
+    # setting the screen's/display's color.
+    screen.fill((0, 0, 0))
 
-        # draws a solid circle on the screen.
-        pygame.draw.circle(screen, (0, 0, 255), (250, 250), 50)
+    # drawing out the circle on the screen, with it's other parameters such as it's size, color, coordinates, radius.
+    pygame.draw.circle(screen, (255, 255, 0), (250, 250), 50)
 
-        # updates the contents of the screen.
-        pygame.display.flip()
+    # updates the content of the screen.
+    pygame.display.flip()
 
-# Quits the game, happens only when the loop finishes.
+# quits the game when the loop is done running, or when the loop finishes.
 pygame.quit()
