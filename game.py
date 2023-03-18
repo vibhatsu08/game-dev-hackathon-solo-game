@@ -103,11 +103,24 @@ all_sprites.add(player)
 background_image = pygame.image.load("images/BACKGROUND_WALLPAPER.jpg")
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
 
-counter = 0
+# creating a custom event for handling the score card for the game.
+UPDATESCORE = pygame.USEREVENT + 2
+pygame.time.set_timer(UPDATESCORE, 1000)
 
+# variable for maintaining the score
+score = 0
+
+# counter for the infinite moving background image.
+counter = 0
 # setting up the key event handlers with the game loop.
 running = True
 while running:
+    # setting up the display text for the game.
+    font = pygame.font.Font("freesansbold.ttf", 30)
+    text = font.render(f"your score : is {score} points", True, (255, 255, 255), (0, 0, 0))
+    text_rect = text.get_rect()
+    text_rect.center = (screen_width - text.get_width() / 2, 0 + text.get_height() / 2)
+
     screen.fill((0, 0, 0))
     screen.blit(background_image, (counter, 0))
     screen.blit(background_image, (screen_width + counter, 0))
@@ -115,6 +128,8 @@ while running:
         screen.blit(background_image, (screen_width + counter, 0))
         counter = 0
     counter -= 1
+    screen.blit(text, text_rect)
+
     for event in pygame.event.get():
         if event.type == KEYDOWN:
             if event.key == K_ESCAPE:
@@ -128,13 +143,16 @@ while running:
             enemies.add(new_enemy)
             all_sprites.add(new_enemy)
 
+        # deals with the UPDATESCORE event.
+        elif event.type == UPDATESCORE:
+            score += 1
+
     # collision detection for the sprite and the enemies.
     # basically if the player collides with any of the member sprites of the enemies group, the player is
     # killed and the loop is broken.
     if pygame.sprite.spritecollideany(player, enemies):
         player.kill()
         running = False
-
     # return a dictionary of all the keys pressed.
     pressed_keys = pygame.key.get_pressed()
 
