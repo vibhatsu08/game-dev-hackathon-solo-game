@@ -103,23 +103,35 @@ all_sprites.add(player)
 background_image = pygame.image.load("images/BACKGROUND_WALLPAPER.jpg")
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
 
-# creating a custom event for handling the score card for the game.
+# creating a custom event for handling the scorecard for the game.
 UPDATESCORE = pygame.USEREVENT + 2
-pygame.time.set_timer(UPDATESCORE, 1000)
+pygame.time.set_timer(UPDATESCORE, 900)
 
 # variable for maintaining the score
 score = 0
 
+# lives that the player has, originally the player will have 3 lives, but with every collision the lives decrement
+# by 1.
+player_lives = 3
+
 # counter for the infinite moving background image.
 counter = 0
+
 # setting up the key event handlers with the game loop.
 running = True
+
 while running:
     # setting up the display text for the game.
     font = pygame.font.Font("freesansbold.ttf", 30)
     text = font.render(f"your score : is {score} points", True, (255, 255, 255), (0, 0, 0))
     text_rect = text.get_rect()
     text_rect.center = (screen_width - text.get_width() / 2, 0 + text.get_height() / 2)
+
+    # setting up the lives card for the player in the game.
+    lives_card = pygame.font.Font("freesansbold.ttf", 30)
+    lives_text = font.render(f"lives remaining : {player_lives}", True, (255, 255, 255), (0, 0, 0))
+    lives_rect = lives_text.get_rect()
+    lives_rect.center = (0 + lives_text.get_width()/2, 0 + lives_text.get_height()/2)
 
     screen.fill((0, 0, 0))
     screen.blit(background_image, (counter, 0))
@@ -129,6 +141,7 @@ while running:
         counter = 0
     counter -= 1
     screen.blit(text, text_rect)
+    screen.blit(lives_text, lives_rect)
 
     for event in pygame.event.get():
         if event.type == KEYDOWN:
@@ -150,7 +163,10 @@ while running:
     # collision detection for the sprite and the enemies.
     # basically if the player collides with any of the member sprites of the enemies group, the player is
     # killed and the loop is broken.
-    if pygame.sprite.spritecollideany(player, enemies):
+    if pygame.sprite.spritecollide(player, enemies, True):
+        player_lives -= 1
+
+    elif player_lives == 0:
         player.kill()
         running = False
     # return a dictionary of all the keys pressed.
