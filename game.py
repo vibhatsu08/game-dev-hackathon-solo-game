@@ -1,32 +1,35 @@
 # This program is an equivalent to any hello world program in any other programming language.
 
-# Importing and initializing the game library.
+# Importing and initialising the pygame library. Along with the keystrokes.
 import pygame
+
+# importing pygame.locals for easier access to the keystrokes.
+from pygame.locals import (
+    K_UP,
+    K_DOWN,
+    K_LEFT,
+    K_RIGHT,
+    K_ESCAPE,
+    KEYDOWN,
+    QUIT,
+)
+
+# iniitalise the game.
 pygame.init()
 
-# setting up the screen's width and height parameters.
-screen_width = 500
-screen_height = 500
+# creating the canvas to be able to draw something on it.
+screen_width = 600
+screen_height = 600
 screen = pygame.display.set_mode([screen_width, screen_height])
 
-# flag for the game loop, the game will run as long as the loop is True.
+# setting the game loop and checking for any kind of key events.
+# checking for loop ending events.
 running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == KEYDOWN:
+            if event.type == K_ESCAPE:
+                running = False
 
-while running :
-    # event to check when the game window is closed.
-    for event in pygame.event.get() :
-        # checks if the game window is closed.
-        if event.type == pygame.QUIT :
+        elif event.type == QUIT:
             running = False
-
-    # setting the screen's/display's color.
-    screen.fill((0, 0, 0))
-
-    # drawing out the circle on the screen, with it's other parameters such as it's size, color, coordinates, radius.
-    pygame.draw.circle(screen, (255, 255, 0), (250, 250), 50)
-
-    # updates the content of the screen.
-    pygame.display.flip()
-
-# quits the game when the loop is done running, or when the loop finishes.
-pygame.quit()
